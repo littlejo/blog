@@ -9,7 +9,7 @@
     <lastBuildDate>Mon, 17 Mar 2025 21:35:52 +0100</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Cilium avec EKS : Introduction</title>
+      <title>Introduction</title>
       <link>http://localhost:1313/posts/cilium-eks-intro/</link>
       <pubDate>Mon, 17 Mar 2025 21:35:52 +0100</pubDate>
       <guid>http://localhost:1313/posts/cilium-eks-intro/</guid>
