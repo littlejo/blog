@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Cilium avec EKS : Introduction | Little Jo blog</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Introduction
+Nous allons voir Cilium sous toutes ces facettes avec EKS, comment il s’intègre à l’environnement d’AWS. Pour cette première partie, on va voir ce qu’est Cilium et EKS et comment installer rapidement Cilium sur un cluster EKS.
+
+Qu’est-ce qu’AWS EKS et Cilium ?
+AWS EKS est un service géré par AWS. Il permet de créer des clusters Kubernetes. Kubernetes est un orchestrateur de containers. J’ai choisi ce service car je le connais bien et que ça permet de confronter cilium à un “vrai” cluster et non à des clusters de dev comme kind ou minikube.">
+    <meta name="generator" content="Hugo 0.145.0">
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+    
+
+    
+<link rel="stylesheet" href="/ananke/css/main.min.css" >
+
+
+
+
+    
+
+    
+      
+
+    
+
+    
+
+    
+      <link rel="canonical" href="http://localhost:1313/posts/cilium-eks-intro/">
+    
+
+    <meta property="og:url" content="http://localhost:1313/posts/cilium-eks-intro/">
+  <meta property="og:site_name" content="Little Jo blog">
+  <meta property="og:title" content="Cilium avec EKS : Introduction">
+  <meta property="og:description" content="Introduction Nous allons voir Cilium sous toutes ces facettes avec EKS, comment il s’intègre à l’environnement d’AWS. Pour cette première partie, on va voir ce qu’est Cilium et EKS et comment installer rapidement Cilium sur un cluster EKS.
+Qu’est-ce qu’AWS EKS et Cilium ? AWS EKS est un service géré par AWS. Il permet de créer des clusters Kubernetes. Kubernetes est un orchestrateur de containers. J’ai choisi ce service car je le connais bien et que ça permet de confronter cilium à un “vrai” cluster et non à des clusters de dev comme kind ou minikube.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-03-17T21:35:52+01:00">
+    <meta property="article:modified_time" content="2025-03-17T21:35:52+01:00">
+
+  <meta itemprop="name" content="Cilium avec EKS : Introduction">
+  <meta itemprop="description" content="Introduction Nous allons voir Cilium sous toutes ces facettes avec EKS, comment il s’intègre à l’environnement d’AWS. Pour cette première partie, on va voir ce qu’est Cilium et EKS et comment installer rapidement Cilium sur un cluster EKS.
+Qu’est-ce qu’AWS EKS et Cilium ? AWS EKS est un service géré par AWS. Il permet de créer des clusters Kubernetes. Kubernetes est un orchestrateur de containers. J’ai choisi ce service car je le connais bien et que ça permet de confronter cilium à un “vrai” cluster et non à des clusters de dev comme kind ou minikube.">
+  <meta itemprop="datePublished" content="2025-03-17T21:35:52+01:00">
+  <meta itemprop="dateModified" content="2025-03-17T21:35:52+01:00">
+  <meta itemprop="wordCount" content="1141">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Cilium avec EKS : Introduction">
+  <meta name="twitter:description" content="Introduction Nous allons voir Cilium sous toutes ces facettes avec EKS, comment il s’intègre à l’environnement d’AWS. Pour cette première partie, on va voir ce qu’est Cilium et EKS et comment installer rapidement Cilium sur un cluster EKS.
+Qu’est-ce qu’AWS EKS et Cilium ? AWS EKS est un service géré par AWS. Il permet de créer des clusters Kubernetes. Kubernetes est un orchestrateur de containers. J’ai choisi ce service car je le connais bien et que ça permet de confronter cilium à un “vrai” cluster et non à des clusters de dev comme kind ou minikube.">
+
+	
+  </head><body class="ma0 avenir bg-near-white development">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Little Jo blog
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      <div class="ananke-socials"></div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked ttu">
+          
+        Posts
+      </aside><div id="sharing" class="mt3 ananke-socials"></div>
+<h1 class="f1 athelas mt3 mb1">Cilium avec EKS : Introduction</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2025-03-17T21:35:52+01:00">March 17, 2025</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h1 id="introduction">Introduction</h1>
+<p>Nous allons voir Cilium sous toutes ces facettes avec EKS, comment il s’intègre à l’environnement d’AWS. Pour cette première partie, on va voir ce qu’est Cilium et EKS et comment installer rapidement Cilium sur un cluster EKS.</p>
+<hr>
+<h1 id="quest-ce-quaws-eks-et-cilium-">Qu’est-ce qu’AWS EKS et Cilium ?</h1>
+<p>AWS EKS est un service géré par AWS. Il permet de créer des clusters Kubernetes. Kubernetes est un orchestrateur de containers. J’ai choisi ce service car je le connais bien et que ça permet de confronter cilium à un “vrai” cluster et non à des clusters de dev comme kind ou minikube.</p>
+<p>Cilium est un plugin réseau (ou CNI : Container Network Interface) pour Kubernetes. Ce projet est géré par la société Isovalent. Contrairement à la plupart des autres CNI qui utilisent iptables/netfilter pour gérer les modifications réseaux, Cilium utilise l’eBPF. Pour faire simple, l’eBPF a beaucoup d’avantages sur iptables. Par exemple, la performance est meilleure, l’identification des trames réseaux est plus simple qui permet ainsi d’avoir une meilleure observabilité du réseau. Ainsi Isovalent a créé un outil qui s’appelle Hubble permettant de visualiser les flux réseaux dans le réseau cilium à l’instar de tcpdump dans un modèle traditionnel.</p>
+<p>Par défaut, AWS EKS utilise un autre plugin réseau AWS VPC CNI. Pourquoi utiliser Cilium plutôt que le plugin par défaut ? Nous allons le voir pendant tout cet été mais la première chose qui me vient en tête est l’absence de Network Policies, des règles qui permettent de dire je veux que tel pod accède à tel pod via tel port. Cela n’est pas possible par exemple avec le CNI par défaut. Nous allons aussi explorer des limitations au niveau de Cilium. Tout n’est pas rose non plus.</p>
+<p>Pour ce premier épisode, nous allons faire (très) simple : on va déployer un cluster eks et installer cilium.</p>
+<hr>
+<h1 id="pré-requis">Pré-requis</h1>
+<ul>
+<li>un compte AWS avec des access keys</li>
+<li>un peu d’argent (Pour une heure : 0.1 $ pour le cluster eks, environ 0.08 $ pour deux t3.medium et 0.05 $ pour la nat gateway). Durée minimale : environ 30 minutes</li>
+<li>eksctl : outil pour déployer des clusters eks</li>
+<li>aws iam authenticator : outil pour s’authentifier auprès du cluster eks</li>
+<li>aws cli : outil pour communiquer avec l’API d’AWS</li>
+<li>kubectl : outil pour controler le cluster kubernetes</li>
+<li>cilium cli : outil pour installer cilium</li>
+</ul>
+<p>Comme AWS EKS est un service payant, il est conseillé d’avoir bien installé les outils avant de créer le cluster.</p>
+<hr>
+<h1 id="déploiement-dun-cluster-aws-eks">Déploiement d’un cluster AWS EKS</h1>
+<p>Nous allons voir comment déployer rapidement un cluster AWS EKS.</p>
+<p>On va exporter les access keys :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export AWS_DEFAULT_REGION<span style="color:#f92672">=</span>ch-ange-1
+</span></span><span style="display:flex;"><span>export AWS_ACCESS_KEY_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;CHANGEME&#34;</span>
+</span></span><span style="display:flex;"><span>export AWS_SECRET_ACCESS_KEY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;CHANGEME&#34;</span>
+</span></span></code></pre></div><p>On va créer un fichier yaml pour eksctl:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">eksctl.io/v1alpha5</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterConfig</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">basic-cilium</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">region</span>: <span style="color:#ae81ff">us-east-1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">version</span>: <span style="color:#e6db74">&#34;1.27&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">managedNodeGroups</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">ng-1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">instanceType</span>: <span style="color:#ae81ff">t3.medium</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># taint nodes so that application pods are</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># not scheduled/executed until Cilium is deployed.</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># Alternatively, see the note above regarding taint effects.</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">taints</span>:
+</span></span><span style="display:flex;"><span>   - <span style="color:#f92672">key</span>: <span style="color:#e6db74">&#34;node.cilium.io/agent-not-ready&#34;</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">value</span>: <span style="color:#e6db74">&#34;true&#34;</span>
+</span></span><span style="display:flex;"><span>     <span style="color:#f92672">effect</span>: <span style="color:#e6db74">&#34;NoExecute&#34;</span>
+</span></span></code></pre></div><p>Je déploie sur us-east-1 mais si vous préférez utilisez une autre région, n’hésitez pas à changer.</p>
+<p>On va lancer la commande suivante :</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>eksctl create cluster -f ./files/eks-cilium.yaml
+</span></span></code></pre></div><p>Cela va prendre un temps important (de l’ordre de 15 minutes).</p>
+<p>Voici ce que cette commande va créer :</p>
+<p>Une fois que c’est fini, on va pouvoir lancer des commandes kubectl :</p>
+<pre tabindex="0"><code>kubectl get node
+NAME STATUS ROLES AGE VERSION
+ip-192–168–11–135.ec2.internal Ready &lt;none&gt; 4m18s v1.27.1-eks-2f008fe
+ip-192–168–56–129.ec2.internal Ready &lt;none&gt; 4m22s v1.27.1-eks-2f008fe
+</code></pre><hr>
+<h1 id="installation-de-cilium">Installation de Cilium</h1>
+<p>Rien de plus simple avec la cli cilium :</p>
+<pre tabindex="0"><code>cilium install
+🔮 Auto-detected Kubernetes kind: EKS
+ℹ️  Using Cilium version 1.13.3
+🔮 Auto-detected cluster name: basic-cilium-us-east-1-eksctl-io
+🔮 Auto-detected datapath mode: aws-eni
+🔮 Auto-detected kube-proxy has been installed
+🔥 Patching the &#34;aws-node&#34; DaemonSet to evict its pods...
+ℹ️  helm template --namespace kube-system cilium cilium/cilium --version 1.13.3 --set cluster.id=0,cluster.name=basic-cilium-us-east-1-eksctl-io,egressMasqueradeInterfaces=eth0,encryption.nodeEncryption=false,eni.enabled=true,ipam.mode=eni,kubeProxyReplacement=disabled,operator.replicas=1,serviceAccounts.cilium.name=cilium,serviceAccounts.operator.name=cilium-operator,tunnel=disabled
+ℹ️  Storing helm values file in kube-system/cilium-cli-helm-values Secret
+🔑 Created CA in secret cilium-ca
+🔑 Generating certificates for Hubble...
+🚀 Creating Service accounts...
+🚀 Creating Cluster roles...
+🚀 Creating ConfigMap for Cilium version 1.13.3...
+🚀 Creating Agent DaemonSet...
+🚀 Creating Operator Deployment...
+⌛ Waiting for Cilium to be installed and ready...
+✅ Cilium was successfully installed! Run &#39;cilium status&#39; to view installation health
+</code></pre><p>On voit que cilium détecte pas mal de chose automatiquement, par exemple qu’il va installer sur EKS. Il va installer la version 1.13.3. Il va donc supprimer les pods qui composent l’aws vpc cni. Il va ensuite générer toutes les dépendances permettant d’installer cilium sur le cluster.</p>
+<p>La commande cilium status va permettre d’avoir un aperçu si cela a bien été installé :</p>
+<pre tabindex="0"><code>cilium status --wait
+    /¯¯\
+ /¯¯\__/¯¯\    Cilium:             OK
+ \__/¯¯\__/    Operator:           OK
+ /¯¯\__/¯¯\    Envoy DaemonSet:    disabled (using embedded mode)
+ \__/¯¯\__/    Hubble Relay:       disabled
+    \__/       ClusterMesh:        disabled
+
+Deployment        cilium-operator    Desired: 1, Ready: 1/1, Available: 1/1
+DaemonSet         cilium             Desired: 2, Ready: 2/2, Available: 2/2
+Containers:       cilium-operator    Running: 1
+                  cilium             Running: 2
+Cluster Pods:     2/2 managed by Cilium
+Image versions    cilium             quay.io/cilium/cilium:v1.13.3@sha256:77176464a1e11ea7e89e984ac7db365e7af39851507e94f137dcf56c87746314: 2
+                  cilium-operator    quay.io/cilium/operator-aws:v1.13.3@sha256:394c40d156235d3c2004f77bb73402457092351cc6debdbc5727ba36fbd863ae: 1
+</code></pre><p>On rajoute l’option wait pour attendre que l’installation soit bien finie.</p>
+<p>Vérifions maintenant que l’installation s’est bien passée :</p>
+<pre tabindex="0"><code>cilium connectivity test
+</code></pre><p>La commande va faire plein de tests réseaux. Cela va donc prendre un temps important.</p>
+<p>En exclusivité voici le résumé final du test :</p>
+<pre tabindex="0"><code>📋 Test Report
+❌ 4/42 tests failed (20/300 actions), 12 tests skipped, 1 scenarios skipped:
+Test [no-policies]:
+  ❌ no-policies/pod-to-host/ping-ipv4-1: cilium-test/client-6965d549d5-hwmbt (192.168.61.62) -&gt; 54.243.4.228 (54.243.4.228:0)
+  ❌ no-policies/pod-to-host/ping-ipv4-3: cilium-test/client-6965d549d5-hwmbt (192.168.61.62) -&gt; 54.158.35.146 (54.158.35.146:0)
+  ❌ no-policies/pod-to-host/ping-ipv4-5: cilium-test/client2-76f4d7c5bc-5h4xr (192.168.63.171) -&gt; 54.158.35.146 (54.158.35.146:0)
+  ❌ no-policies/pod-to-host/ping-ipv4-7: cilium-test/client2-76f4d7c5bc-5h4xr (192.168.63.171) -&gt; 54.243.4.228 (54.243.4.228:0)
+Test [no-policies-extra]:
+  ❌ no-policies-extra/pod-to-remote-nodeport/curl-0: cilium-test/client-6965d549d5-hwmbt (192.168.61.62) -&gt; cilium-test/echo-same-node (echo-same-node:8080)
+  ❌ no-policies-extra/pod-to-remote-nodeport/curl-1: cilium-test/client-6965d549d5-hwmbt (192.168.61.62) -&gt; cilium-test/echo-other-node (echo-other-node:8080)
+  ❌ no-policies-extra/pod-to-remote-nodeport/curl-2: cilium-test/client2-76f4d7c5bc-5h4xr (192.168.63.171) -&gt; cilium-test/echo-other-node (echo-other-node:8080)
+  ❌ no-policies-extra/pod-to-remote-nodeport/curl-3: cilium-test/client2-76f4d7c5bc-5h4xr (192.168.63.171) -&gt; cilium-test/echo-same-node (echo-same-node:8080)
+  ❌ no-policies-extra/pod-to-local-nodeport/curl-0: cilium-test/client-6965d549d5-hwmbt (192.168.61.62) -&gt; cilium-test/echo-other-node (echo-other-node:8080)
+  ❌ no-policies-extra/pod-to-local-nodeport/curl-1: cilium-test/client-6965d549d5-hwmbt (192.168.61.62) -&gt; cilium-test/echo-same-node (echo-same-node:8080)
+  ❌ no-policies-extra/pod-to-local-nodeport/curl-2: cilium-test/client2-76f4d7c5bc-5h4xr (192.168.63.171) -&gt; cilium-test/echo-same-node (echo-same-node:8080)
+  ❌ no-policies-extra/pod-to-local-nodeport/curl-3: cilium-test/client2-76f4d7c5bc-5h4xr (192.168.63.171) -&gt; cilium-test/echo-other-node (echo-other-node:8080)
+Test [allow-all-except-world]:
+  ❌ allow-all-except-world/pod-to-host/ping-ipv4-1: cilium-test/client-6965d549d5-hwmbt (192.168.61.62) -&gt; 54.158.35.146 (54.158.35.146:0)
+  ❌ allow-all-except-world/pod-to-host/ping-ipv4-3: cilium-test/client-6965d549d5-hwmbt (192.168.61.62) -&gt; 54.243.4.228 (54.243.4.228:0)
+  ❌ allow-all-except-world/pod-to-host/ping-ipv4-5: cilium-test/client2-76f4d7c5bc-5h4xr (192.168.63.171) -&gt; 54.158.35.146 (54.158.35.146:0)
+  ❌ allow-all-except-world/pod-to-host/ping-ipv4-7: cilium-test/client2-76f4d7c5bc-5h4xr (192.168.63.171) -&gt; 54.243.4.228 (54.243.4.228:0)
+Test [host-entity]:
+  ❌ host-entity/pod-to-host/ping-ipv4-1: cilium-test/client-6965d549d5-hwmbt (192.168.61.62) -&gt; 54.158.35.146 (54.158.35.146:0)
+  ❌ host-entity/pod-to-host/ping-ipv4-3: cilium-test/client-6965d549d5-hwmbt (192.168.61.62) -&gt; 54.243.4.228 (54.243.4.228:0)
+  ❌ host-entity/pod-to-host/ping-ipv4-5: cilium-test/client2-76f4d7c5bc-5h4xr (192.168.63.171) -&gt; 54.158.35.146 (54.158.35.146:0)
+  ❌ host-entity/pod-to-host/ping-ipv4-7: cilium-test/client2-76f4d7c5bc-5h4xr (192.168.63.171) -&gt; 54.243.4.228 (54.243.4.228:0)
+</code></pre><p>On voit déjà que :</p>
+<ul>
+<li>le ping des pods vers les hosts ne fonctionne pas.</li>
+<li>le test des nodeports ne fonctionne pas</li>
+</ul>
+<p>C’est déjà pas mal, on n’a pas forcément besoin du ping ni des nodeports.</p>
+<p>Si on veut résoudre le problème, il suffit d’ouvrir le ping et les ports tcp des nodeports (30000–32767) au niveau du security group qui concernent les ec2. On aura alors :</p>
+<p>On aura alors :</p>
+<pre tabindex="0"><code>✅ All 42 tests (300 actions) successful, 12 tests skipped, 1 scenarios skipped.
+</code></pre><hr>
+<p>La première partie est finie. Vous pouvez voir cette installation résumée ici : <a href="https://github.com/littlejo/cilium-eks-cookbook/blob/main/install-cilium-eks.md">https://github.com/littlejo/cilium-eks-cookbook/blob/main/install-cilium-eks.md</a></p>
+<p>Dans la prochaine partie, nous verrons ce qui est “caché” dans l’installation avec la cli cilium avec l’installation avec helm.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="http://localhost:1313/" >
+    &copy;  Little Jo blog 2025 
+  </a>
+    <div><div class="ananke-socials"></div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
